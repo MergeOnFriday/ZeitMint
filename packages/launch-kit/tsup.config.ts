@@ -7,6 +7,7 @@ export default defineConfig({
     "utility-manifest": "src/utility-manifest.ts",
     readiness: "src/readiness.ts",
     "adapters/launchpad": "src/adapters/launchpad.ts",
+    "integrations/uniswap-v4": "src/integrations/uniswap-v4.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

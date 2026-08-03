@@ -847,7 +847,7 @@ export default function ZeitMintApp() {
         <div className="sdk-heading">
           <div>
             <span className="section-index">04 / FOR LAUNCHPADS</span>
-            <span className="sdk-status"><i /> SDK v0.2 · UNIVERSAL HANDOFF</span>
+            <span className="sdk-status"><i /> SDK v0.3 · UNIVERSAL + OPTIONAL V4</span>
             <h2>One creative format.<br />Any launch workflow.</h2>
           </div>
           <div className="sdk-heading-copy">
@@ -855,7 +855,8 @@ export default function ZeitMintApp() {
               <strong>@zeitmint/launch-kit</strong> now ships typed builders,
               JSON Schema validation, bundle consistency checks and a universal
               launchpad handoff in ESM and CommonJS. No custody, deployment or liquidity
-              logic is hidden inside it.
+              logic is hidden inside it. EVM launchpads can opt into validated Uniswap v4
+              PoolKey and hook intents without coupling Solana workflows to Uniswap.
             </p>
             <div className="sdk-actions">
               <a className="button button-primary" href="mailto:devs@zeitmint.com?subject=ZeitMint%20SDK%20integration">
@@ -910,7 +911,7 @@ export default function ZeitMintApp() {
         <div className="sdk-flow" aria-label="Launch Kit integration flow">
           <article><span>01 · SDK</span><strong>Validate locally</strong><p>Typed ESM/CommonJS package, versioned schemas and consistent issue paths.</p></article>
           <article><span>02 · API</span><strong>Validate remotely</strong><p>POST a bundle to /api/v1/partner/validate with a strict 256 KiB request limit.</p></article>
-          <article><span>03 · HANDOFF</span><strong>Map the draft</strong><p>Target any launchpad by ID, add namespaced extension fields and keep final submission launchpad-owned.</p></article>
+          <article><span>03 · HANDOFF</span><strong>Map the draft</strong><p>Target any launchpad by ID, or opt into a Uniswap v4 PoolKey and hook intent, while final execution stays launchpad-owned.</p></article>
         </div>
 
         <div className="partner-showcase">

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-08-03
+
+- Added an optional, separately exported Uniswap v4 PoolKey intent integration.
+- Added static and dynamic LP fee validation, currency ordering and TickMath price bounds.
+- Added hook-address permission decoding, expected-permission matching and return-delta dependency checks.
+- Kept pool initialization, hook deployment, liquidity, signing and fund movement outside the SDK.
+
 ## 0.2.0 - 2026-08-03
 
 - Replaced the partner-specific root adapter with a universal launchpad handoff profile.

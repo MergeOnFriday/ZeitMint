@@ -3,7 +3,7 @@ import "server-only";
 import { timingSafeEqual } from "node:crypto";
 
 export const PARTNER_API_VERSION = "1.0";
-export const SDK_VERSION = "0.2.0";
+export const SDK_VERSION = "0.3.0";
 export const MAX_PARTNER_BODY_BYTES = 256 * 1024;
 
 const commonHeaders = {
@@ -29,6 +29,15 @@ export const partnerCapabilities = {
     utilityManifest: "https://zeitmint.com/utility-manifest.schema.json",
     readinessReport: "https://zeitmint.com/readiness-report.schema.json",
   },
+  integrations: [
+    {
+      id: "uniswap-v4",
+      packageExport: "@zeitmint/launch-kit/integrations/uniswap-v4",
+      status: "ready-for-partner-testing",
+      mode: "intent-only",
+      executesOnchain: false,
+    },
+  ],
   endpoints: {
     capabilities: { method: "GET", path: "/api/v1/partner/capabilities" },
     validate: { method: "POST", path: "/api/v1/partner/validate" },

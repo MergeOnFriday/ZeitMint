@@ -17,7 +17,7 @@ ZeitMint gives launchpads a structured intake layer before deployment. A creator
 | Launch-readiness validator | Working browser implementation |
 | Launch Kit v1 | Working builder, export and public JSON Schema |
 | Utility Manifest v1 | Working mission builder, export and public JSON Schema |
-| [`@zeitmint/launch-kit`](https://www.npmjs.com/package/@zeitmint/launch-kit) | Universal v0.2.0 published on npm |
+| [`@zeitmint/launch-kit`](https://www.npmjs.com/package/@zeitmint/launch-kit) | Universal v0.3.0 release with optional Uniswap v4 integration |
 | Partner API v1 | Versioned validation, capabilities and universal draft routes |
 | Crypto checkout | Non-transactional demo |
 | Robinhood Chain provenance | Optional testnet experiment |
@@ -91,11 +91,13 @@ For a simple production v1, use a wallet adapter and a 49 USDC transfer to a con
 
 The studio creates a stable JSON package containing token metadata, creative direction, campaign copy, handoff boundaries and creator-review flags. The handoff records a preferred launchpad and chain, defaulting to Emblem and Solana, while preserving an open format for other launchpads and EVM chains. Users can download the JSON or copy an Emblem-ready plain-text brief.
 
-The public JSON Schema lives at `/launch-kit.schema.json`. The implementation in `app/lib/launch-kit.ts` is the starting point for a future `@zeitmint/launch-kit` SDK with helpers for launchpads to validate and import kits.
+The public JSON Schema lives at `/launch-kit.schema.json`. The browser implementation lives in `app/lib/launch-kit.ts`; the published SDK provides typed helpers for launchpads to validate and import kits.
 
 ## Partner SDK and API
 
-The `packages/launch-kit` workspace contains the published `@zeitmint/launch-kit` v0.2.0 package. It builds ESM, CommonJS and TypeScript declarations; validates all three public schemas; checks name, ticker and chain consistency across a bundle; and maps an approved bundle into a neutral launchpad-owned draft.
+The `packages/launch-kit` workspace contains `@zeitmint/launch-kit` v0.3.0. It builds ESM, CommonJS and TypeScript declarations; validates all three public schemas; checks name, ticker and chain consistency across a bundle; and maps an approved bundle into a neutral launchpad-owned draft.
+
+The core SDK is protocol-agnostic. EVM launchpads can optionally import `@zeitmint/launch-kit/integrations/uniswap-v4` to create and validate a protocol-shaped PoolKey and hook intent. That integration orders currencies and validates fees, tick spacing, initial price bounds and hook permission flags, but does not deploy hooks, initialize a pool, add liquidity, sign or move funds. Solana and Emblem workflows continue to use the universal handoff without a Uniswap dependency.
 
 Build, test and inspect the release tarball locally with:
 

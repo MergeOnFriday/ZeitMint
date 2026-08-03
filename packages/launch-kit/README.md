@@ -61,6 +61,39 @@ if (bundle.valid && options.valid) {
 
 The output uses the neutral `zeitmint-launchpad-handoff` profile. Common token, creative, utility and launch-intent fields remain stable, while `options.extensions` carries launchpad-owned JSON without coupling the SDK to a particular platform. Submission always remains partner-controlled.
 
+## Optional Uniswap v4 intent
+
+EVM launchpads using Uniswap v4 can import the separate integration entry point. It validates protocol-shaped PoolKey inputs, orders currencies, encodes static or dynamic fees and verifies the permissions encoded in a hook address.
+
+```ts
+import { validateBundle } from "@zeitmint/launch-kit";
+import {
+  createUniswapV4PoolIntent,
+  validateUniswapV4PoolIntentOptions,
+} from "@zeitmint/launch-kit/integrations/uniswap-v4";
+
+const bundle = validateBundle(payload);
+const options = validateUniswapV4PoolIntentOptions({
+  chainId: 8453,
+  poolManager: "0x0000000000000000000000000000000000001000",
+  tokenAddress: "0x0000000000000000000000000000000000000100",
+  quoteCurrency: "native",
+  fee: "dynamic",
+  tickSpacing: 60,
+  hookAddress: "0x0000000000000000000000000000000000000080",
+  expectedHookPermissions: ["beforeSwap"],
+  initialSqrtPriceX96: "79228162514264337593543950336",
+});
+
+if (bundle.valid && options.valid) {
+  const intent = createUniswapV4PoolIntent(bundle.value, options.value);
+  // Verify the real deployment and hook bytecode, then construct the
+  // launchpad-owned transaction from the reviewed intent.
+}
+```
+
+The addresses above are format-valid examples, not deployment addresses. The integration performs no RPC calls and deliberately does not deploy hooks, initialize pools, add liquidity, sign transactions or move funds. The consuming launchpad must verify its PoolManager deployment and hook bytecode on the target EVM chain. The core package remains protocol-agnostic, and this integration does not apply to Solana launches.
+
 ## Public API
 
 - Builders for all three ZeitMint documents
@@ -68,6 +101,7 @@ The output uses the neutral `zeitmint-launchpad-handoff` profile. Common token, 
 - Cross-document bundle validation
 - Normalized partner handoff
 - Universal launchpad draft mapping and option validation
+- Optional Uniswap v4 PoolKey and hook-intent validation
 - Namespaced partner extension fields
 - ESM, CommonJS and TypeScript declarations
 

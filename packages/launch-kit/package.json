@@ -1,11 +1,13 @@
 {
   "name": "@zeitmint/launch-kit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Typed launch-readiness, utility and partner-handoff primitives for token launch platforms.",
   "keywords": [
     "zeitmint",
     "launchpad",
     "solana",
+    "uniswap-v4",
+    "evm",
     "token",
     "sdk"
   ],
@@ -53,6 +55,11 @@
       "types": "./dist/adapters/launchpad.d.ts",
       "import": "./dist/adapters/launchpad.js",
       "require": "./dist/adapters/launchpad.cjs"
+    },
+    "./integrations/uniswap-v4": {
+      "types": "./dist/integrations/uniswap-v4.d.ts",
+      "import": "./dist/integrations/uniswap-v4.js",
+      "require": "./dist/integrations/uniswap-v4.cjs"
     },
     "./schemas/*": "./schemas/*"
   },

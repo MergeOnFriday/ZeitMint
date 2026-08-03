@@ -1,6 +1,6 @@
 {
   "name": "@zeitmint/launch-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Typed launch-readiness, utility and partner-handoff primitives for token launch platforms.",
   "keywords": [
     "zeitmint",
@@ -49,10 +49,10 @@
       "import": "./dist/readiness.js",
       "require": "./dist/readiness.cjs"
     },
-    "./adapters/based-bid": {
-      "types": "./dist/adapters/based-bid.d.ts",
-      "import": "./dist/adapters/based-bid.js",
-      "require": "./dist/adapters/based-bid.cjs"
+    "./adapters/launchpad": {
+      "types": "./dist/adapters/launchpad.d.ts",
+      "import": "./dist/adapters/launchpad.js",
+      "require": "./dist/adapters/launchpad.cjs"
     },
     "./schemas/*": "./schemas/*"
   },

@@ -4,10 +4,11 @@ import test from "node:test";
 import {
   buildLaunchKit,
   buildUtilityManifest,
-  createBasedBidDraft,
+  createLaunchpadDraft,
   createReadinessReport,
-  validateBasedBidDraftOptions,
   validateBundle,
+  validateLaunchpadDraftOptions,
+  validateLaunchpadId,
   validateLaunchKit,
 } from "../dist/index.js";
 
@@ -21,13 +22,13 @@ const concept = {
 };
 
 function buildValidBundle() {
-  const launchKit = buildLaunchKit(concept, { launchpad: "based-bid", chain: "solana" });
+  const launchKit = buildLaunchKit(concept, { launchpad: "example-launchpad", chain: "solana" });
   const utilityManifest = buildUtilityManifest(
     {
       projectName: concept.name,
       symbol: concept.ticker,
       chain: "solana",
-      preferredLaunchpad: "based-bid",
+      preferredLaunchpad: "example-launchpad",
       title: "Create an open community asset library",
       deliverable: "Design and document ten original reusable community assets with editable source files.",
       submissionRequirements: "Include source files, licenses and a public preview link.",
@@ -54,7 +55,7 @@ function buildValidBundle() {
       telegramUrl: "https://t.me/example",
       artworkUrl: "https://example.com/logo.png",
       chain: "solana",
-      launchpad: "based-bid",
+      launchpad: "example-launchpad",
       originalIdentityConfirmed: true,
       noReturnsPromised: true,
       creatorControlsProject: true,
@@ -85,18 +86,26 @@ test("rejects cross-document ticker mismatches", () => {
   assert.ok(result.issues.some((issue) => issue.code === "bundle_mismatch"));
 });
 
-test("maps a valid bundle into a Based.bid review draft", () => {
+test("maps a valid bundle into a universal launchpad review draft", () => {
   const result = validateBundle(buildValidBundle());
   assert.equal(result.valid, true);
-  const draft = createBasedBidDraft(result.value, { chain: "solana", launchType: "pool" });
+  const draft = createLaunchpadDraft(result.value, "example-launchpad", {
+    chain: "solana",
+    launchType: "pool",
+    extensions: { partnerField: "partner-owned" },
+  });
   assert.equal(draft.review.readyForPartnerReview, true);
   assert.equal(draft.review.deploysToken, false);
-  assert.equal(draft.adapter.submissionStatus, "awaiting-partner-api-contract");
+  assert.equal(draft.profile.targetLaunchpad, "example-launchpad");
+  assert.equal(draft.profile.submissionStatus, "partner-controlled");
+  assert.equal(draft.extensions.partnerField, "partner-owned");
 });
 
 test("validates fee intent without assuming partner approval", () => {
-  assert.equal(validateBasedBidDraftOptions({ feeIntent: { graduationFeeBps: 250 } }).valid, true);
-  assert.equal(validateBasedBidDraftOptions({ feeIntent: { graduationFeeBps: 10_001 } }).valid, false);
+  assert.equal(validateLaunchpadDraftOptions({ feeIntent: { graduationFeeBps: 250 } }).valid, true);
+  assert.equal(validateLaunchpadDraftOptions({ feeIntent: { graduationFeeBps: 10_001 } }).valid, false);
+  assert.equal(validateLaunchpadId("any-launchpad").valid, true);
+  assert.equal(validateLaunchpadId("Not A Slug").valid, false);
 });
 
 test("ships a CommonJS entry point", () => {

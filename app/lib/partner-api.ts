@@ -3,7 +3,7 @@ import "server-only";
 import { timingSafeEqual } from "node:crypto";
 
 export const PARTNER_API_VERSION = "1.0";
-export const SDK_VERSION = "0.1.0";
+export const SDK_VERSION = "0.2.0";
 export const MAX_PARTNER_BODY_BYTES = 256 * 1024;
 
 const commonHeaders = {
@@ -32,17 +32,16 @@ export const partnerCapabilities = {
   endpoints: {
     capabilities: { method: "GET", path: "/api/v1/partner/capabilities" },
     validate: { method: "POST", path: "/api/v1/partner/validate" },
-    basedBidDraft: { method: "POST", path: "/api/v1/partner/based-bid/draft" },
+    launchpadDraft: { method: "POST", path: "/api/v1/partner/{partner}/draft" },
   },
-  adapters: [
-    {
-      id: "based-bid",
-      version: "0.1.0",
-      status: "ready-for-partner-review",
-      submissionStatus: "awaiting-partner-api-contract",
-      authentication: "bearer",
-    },
-  ],
+  handoffProfile: {
+    id: "zeitmint-launchpad-handoff",
+    version: "1.0",
+    status: "ready-for-partner-testing",
+    target: "any-launchpad",
+    authentication: "partner-specific-bearer",
+    customFields: "options.extensions",
+  },
   boundaries: {
     deploysTokens: false,
     signsTransactions: false,

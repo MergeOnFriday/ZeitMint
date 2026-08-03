@@ -25,7 +25,7 @@
     "deploy": "npm run env:vercel && vercel --prod"
   },
   "dependencies": {
-    "@zeitmint/launch-kit": "0.1.0",
+    "@zeitmint/launch-kit": "0.2.0",
     "next": "16.2.12",
     "react": "19.2.6",
     "react-dom": "19.2.6",

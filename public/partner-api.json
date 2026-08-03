@@ -37,18 +37,27 @@
         }
       }
     },
-    "/api/v1/partner/based-bid/draft": {
+    "/api/v1/partner/{partner}/draft": {
       "post": {
-        "operationId": "createBasedBidDraft",
-        "summary": "Map a valid ZeitMint bundle into a Based.bid review draft",
-        "description": "Returns a deterministic field mapping. It does not submit to Based.bid; live submission awaits the partner endpoint and authentication contract.",
+        "operationId": "createLaunchpadDraft",
+        "summary": "Map a valid ZeitMint bundle into a universal launchpad review draft",
+        "description": "Returns a neutral, deterministic handoff for the target launchpad. It does not submit, deploy, sign, move funds or assume a partner-specific contract.",
+        "parameters": [
+          {
+            "name": "partner",
+            "in": "path",
+            "required": true,
+            "description": "Lowercase launchpad or partner identifier used for authentication and draft targeting.",
+            "schema": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" }
+          }
+        ],
         "security": [{ "partnerBearer": [] }],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BasedBidDraftRequest" } } }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LaunchpadDraftRequest" } } }
         },
         "responses": {
-          "200": { "description": "Based.bid review draft", "content": { "application/json": { "schema": { "type": "object" } } } },
+          "200": { "description": "Universal launchpad review draft", "content": { "application/json": { "schema": { "type": "object" } } } },
           "413": { "$ref": "#/components/responses/PayloadTooLarge" },
           "415": { "$ref": "#/components/responses/UnsupportedMediaType" },
           "422": { "$ref": "#/components/responses/ValidationFailed" }
@@ -78,7 +87,7 @@
         },
         "additionalProperties": false
       },
-      "BasedBidDraftRequest": {
+      "LaunchpadDraftRequest": {
         "type": "object",
         "required": ["bundle"],
         "properties": {
@@ -86,21 +95,26 @@
           "options": {
             "type": "object",
             "properties": {
-              "chain": { "enum": ["base", "solana", "ethereum", "bnb", "robinhood-chain", "other"] },
-              "launchType": { "enum": ["pool", "flash-token", "board"] },
-              "dex": { "type": "string" },
+              "chain": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+              "launchType": { "type": "string", "minLength": 1, "maxLength": 128 },
+              "venue": { "type": "string", "minLength": 1, "maxLength": 128 },
               "startingMarketCapUsd": { "type": "number", "exclusiveMinimum": 0 },
               "initialBuyAmount": { "type": "string" },
               "feeIntent": {
                 "type": "object",
                 "properties": {
-                  "preGraduationBuyFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
-                  "preGraduationSellFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "buyFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "sellFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
                   "graduationFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
-                  "postGraduationTradingFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "tradingFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
                   "routingNote": { "type": "string" }
                 },
                 "additionalProperties": false
+              },
+              "extensions": {
+                "type": "object",
+                "description": "Partner-owned JSON fields that do not alter the neutral ZeitMint core contract.",
+                "additionalProperties": true
               }
             },
             "additionalProperties": false

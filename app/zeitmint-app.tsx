@@ -189,7 +189,7 @@ const chainOptions: Array<{
 const sdkInstallCommand = "npm install @zeitmint/launch-kit";
 
 const sdkIntegrationExample = `import {
-  createBasedBidDraft,
+  createLaunchpadDraft,
   validateBundle,
 } from "@zeitmint/launch-kit";
 
@@ -203,8 +203,9 @@ if (!result.valid) {
   );
 }
 
-const draft = createBasedBidDraft(
+const draft = createLaunchpadDraft(
   result.value,
+  "your-launchpad",
   { chain: "solana", launchType: "pool" },
 );
 
@@ -348,7 +349,7 @@ export default function ZeitMintApp() {
       "",
       "Creators get launch-readiness checks, a differentiated identity, a community mission and structured manifests. Launchpads get a tested, non-custodial SDK, versioned schemas and a stateless validation API with Solana as the default and EVM support built in.",
       "",
-      "The SDK is ready for partner testing. The Based.bid draft adapter is implemented, and Emblem remains our preferred launchpad design target.",
+      "The universal SDK is ready for partner testing. Any launchpad can map the same neutral handoff into its own flow, while Emblem remains our preferred design-partner target.",
       "",
       `SDK showcase: ${showcaseUrl}`,
       "Contact: devs@zeitmint.com",
@@ -846,14 +847,14 @@ export default function ZeitMintApp() {
         <div className="sdk-heading">
           <div>
             <span className="section-index">04 / FOR LAUNCHPADS</span>
-            <span className="sdk-status"><i /> SDK v0.1 · READY FOR PARTNER TESTING</span>
+            <span className="sdk-status"><i /> SDK v0.2 · UNIVERSAL HANDOFF</span>
             <h2>One creative format.<br />Any launch workflow.</h2>
           </div>
           <div className="sdk-heading-copy">
             <p>
               <strong>@zeitmint/launch-kit</strong> now ships typed builders,
-              JSON Schema validation, bundle consistency checks and partner draft
-              adapters in ESM and CommonJS. No custody, deployment or liquidity
+              JSON Schema validation, bundle consistency checks and a universal
+              launchpad handoff in ESM and CommonJS. No custody, deployment or liquidity
               logic is hidden inside it.
             </p>
             <div className="sdk-actions">
@@ -877,7 +878,7 @@ export default function ZeitMintApp() {
             <div className="sdk-install-row">
               <span>$</span>
               <code>{sdkInstallCommand}</code>
-              <small>NPM PUBLICATION PENDING</small>
+              <small>PUBLIC NPM PACKAGE</small>
             </div>
             <pre aria-label="ZeitMint SDK integration example"><code>{sdkIntegrationExample}</code></pre>
           </div>
@@ -896,7 +897,7 @@ export default function ZeitMintApp() {
               </div>
             </div>
             <dl className="payload-fields">
-              <div><dt>adapter</dt><dd>based-bid</dd></div>
+              <div><dt>profile</dt><dd>launchpad-handoff</dd></div>
               <div><dt>preferredChain</dt><dd>solana</dd></div>
               <div><dt>utility.type</dt><dd>community-bounties</dd></div>
               <div><dt>creatorApproval</dt><dd>true</dd></div>
@@ -909,7 +910,7 @@ export default function ZeitMintApp() {
         <div className="sdk-flow" aria-label="Launch Kit integration flow">
           <article><span>01 · SDK</span><strong>Validate locally</strong><p>Typed ESM/CommonJS package, versioned schemas and consistent issue paths.</p></article>
           <article><span>02 · API</span><strong>Validate remotely</strong><p>POST a bundle to /api/v1/partner/validate with a strict 256 KiB request limit.</p></article>
-          <article><span>03 · ADAPTER</span><strong>Map the draft</strong><p>The Based.bid mapper is ready behind partner bearer auth; final submission remains launchpad-owned.</p></article>
+          <article><span>03 · HANDOFF</span><strong>Map the draft</strong><p>Target any launchpad by ID, add namespaced extension fields and keep final submission launchpad-owned.</p></article>
         </div>
 
         <div className="partner-showcase">
@@ -917,10 +918,10 @@ export default function ZeitMintApp() {
             <span>PARTNERSHIP SHOWCASE</span>
             <h3>The integration surface is ready for dev review.</h3>
             <p>
-              Based.bid draft mapping is implemented against the public launch fields.
-              Live submission stays disabled until their devs confirm endpoint,
-              authentication, idempotency and error semantics. Emblem remains the
-              preferred design-partner target for the Solana-first handoff.
+              The core format is partner-neutral: launchpads receive the same validated
+              token, creative, utility and readiness fields, then map optional extensions
+              into their own flow. Emblem remains the preferred design-partner target for
+              the Solana-first handoff.
             </p>
           </div>
           <div className="partner-showcase-actions">
@@ -932,9 +933,9 @@ export default function ZeitMintApp() {
           </div>
         </div>
         <p className="sdk-disclaimer">
-          SDK source, tests and API contracts are ready for partner testing; public npm
-          publication is pending account setup. Adapter availability does not imply a
-          completed partnership or endorsement. Partners retain final launch control.
+          SDK source, tests, API contracts and the npm package are ready for partner
+          testing. Integration support does not imply a completed partnership or
+          endorsement. Partners retain final launch control.
         </p>
       </section>
 

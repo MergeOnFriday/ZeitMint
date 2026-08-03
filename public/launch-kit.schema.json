@@ -55,10 +55,12 @@
       "properties": {
         "mode": { "const": "launchpad-ready" },
         "preferredLaunchpad": {
-          "enum": ["emblem", "based-bid", "open-standard"]
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
         },
         "preferredChain": {
-          "enum": ["solana", "robinhood-chain", "evm"]
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
         },
         "integrationStatus": {
           "enum": ["partnership-target", "integration-candidate", "open-standard"]

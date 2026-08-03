@@ -24,7 +24,7 @@ The current integration surface is intentionally small and portable:
 - `app/lib/utility-manifest.ts`
 - `app/lib/readiness.ts`
 
-The `@zeitmint/launch-kit` v0.1 workspace exposes parsing, deterministic validation, bundle consistency and mapping helpers. The versioned Partner API provides the same validation contract over HTTP. Neither surface deploys tokens, moves funds or takes control of a launchpad workflow.
+The `@zeitmint/launch-kit` workspace exposes parsing, deterministic validation, bundle consistency and a universal launchpad handoff. The versioned Partner API provides the same validation contract over HTTP. Neither surface deploys tokens, moves funds or takes control of a launchpad workflow.
 
 ## Integration entry points
 
@@ -33,9 +33,9 @@ The `@zeitmint/launch-kit` v0.1 workspace exposes parsing, deterministic validat
 - Discovery: `https://zeitmint.com/.well-known/zeitmint.json`
 - Capabilities: `GET /api/v1/partner/capabilities`
 - Bundle validation: `POST /api/v1/partner/validate`
-- Based.bid draft mapping: `POST /api/v1/partner/based-bid/draft`
+- Universal draft mapping: `POST /api/v1/partner/{partner}/draft`
 
-The SDK is ready for partner testing. Public npm publication is a distribution task and remains pending until a ZeitMint npm organization is configured.
+The partner-neutral v0.2.0 release is published on npm and ready for integration testing.
 
 ## Trust boundaries
 

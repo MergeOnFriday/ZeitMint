@@ -10,7 +10,7 @@ The SDK validates ZeitMint Launch Kit v1, Utility Manifest v1 and readiness repo
 npm install @zeitmint/launch-kit
 ```
 
-The package is source-ready in the ZeitMint repository. Public npm publication requires a ZeitMint npm account and is tracked separately from SDK readiness.
+The package is publicly available on npm and can be used by any launchpad without a ZeitMint-specific backend.
 
 ## Validate a bundle
 
@@ -37,24 +37,29 @@ Validation is deterministic and performs no network requests. `validateBundle` c
 
 ```ts
 import {
-  createBasedBidDraft,
-  validateBasedBidDraftOptions,
+  createLaunchpadDraft,
+  validateLaunchpadDraftOptions,
   validateBundle,
 } from "@zeitmint/launch-kit";
 
 const bundle = validateBundle(payload);
-const options = validateBasedBidDraftOptions({
+const options = validateLaunchpadDraftOptions({
   chain: "solana",
   launchType: "pool",
+  extensions: { partnerOwnedField: "value" },
 });
 
 if (bundle.valid && options.valid) {
-  const draft = createBasedBidDraft(bundle.value, options.value);
+  const draft = createLaunchpadDraft(
+    bundle.value,
+    "your-launchpad",
+    options.value,
+  );
   // Map the reviewed draft into the partner-owned launch flow.
 }
 ```
 
-The Based.bid adapter is a field mapper, not a live submission client. Its `submissionStatus` remains `awaiting-partner-api-contract` until Based.bid confirms endpoint, authentication, idempotency and error semantics.
+The output uses the neutral `zeitmint-launchpad-handoff` profile. Common token, creative, utility and launch-intent fields remain stable, while `options.extensions` carries launchpad-owned JSON without coupling the SDK to a particular platform. Submission always remains partner-controlled.
 
 ## Public API
 
@@ -62,7 +67,8 @@ The Based.bid adapter is a field mapper, not a live submission client. Its `subm
 - JSON Schema validators and throwing parsers
 - Cross-document bundle validation
 - Normalized partner handoff
-- Based.bid draft mapping and option validation
+- Universal launchpad draft mapping and option validation
+- Namespaced partner extension fields
 - ESM, CommonJS and TypeScript declarations
 
 ## Compatibility and versioning

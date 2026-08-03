@@ -6,7 +6,7 @@ export default defineConfig({
     "launch-kit": "src/launch-kit.ts",
     "utility-manifest": "src/utility-manifest.ts",
     readiness: "src/readiness.ts",
-    "adapters/based-bid": "src/adapters/based-bid.ts",
+    "adapters/launchpad": "src/adapters/launchpad.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

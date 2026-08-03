@@ -17,8 +17,8 @@ ZeitMint gives launchpads a structured intake layer before deployment. A creator
 | Launch-readiness validator | Working browser implementation |
 | Launch Kit v1 | Working builder, export and public JSON Schema |
 | Utility Manifest v1 | Working mission builder, export and public JSON Schema |
-| `@zeitmint/launch-kit` | Tested v0.1 source package; npm publication pending |
-| Partner API v1 | Versioned validation, capabilities and Based.bid draft routes |
+| [`@zeitmint/launch-kit`](https://www.npmjs.com/package/@zeitmint/launch-kit) | Universal v0.2.0 published on npm |
+| Partner API v1 | Versioned validation, capabilities and universal draft routes |
 | Crypto checkout | Non-transactional demo |
 | Robinhood Chain provenance | Optional testnet experiment |
 
@@ -95,9 +95,9 @@ The public JSON Schema lives at `/launch-kit.schema.json`. The implementation in
 
 ## Partner SDK and API
 
-The `packages/launch-kit` workspace contains the real `@zeitmint/launch-kit` v0.1 package. It builds ESM, CommonJS and TypeScript declarations; validates all three public schemas; checks name, ticker and chain consistency across a bundle; and maps an approved bundle into a launchpad-owned draft.
+The `packages/launch-kit` workspace contains the published `@zeitmint/launch-kit` v0.2.0 package. It builds ESM, CommonJS and TypeScript declarations; validates all three public schemas; checks name, ticker and chain consistency across a bundle; and maps an approved bundle into a neutral launchpad-owned draft.
 
-The package is not published to npm yet because the ZeitMint npm organization and release credentials still need to be created. This affects distribution, not the source package or test surface. Build, test and inspect the tarball locally with:
+Build, test and inspect the release tarball locally with:
 
 ```bash
 npm run sdk:test
@@ -108,16 +108,16 @@ The deployed partner API exposes:
 
 - `GET /api/v1/partner/capabilities`
 - `POST /api/v1/partner/validate`
-- `POST /api/v1/partner/based-bid/draft`
+- `POST /api/v1/partner/{partner}/draft`
 - `GET /partner-api.json`
 - `GET /.well-known/zeitmint.json`
 
 The API is stateless, performs no network calls from submitted content and limits request bodies to 256 KiB. Public bundle validation is unauthenticated; partner draft routes require a partner-specific bearer token configured in the server-only `ZEITMINT_PARTNER_KEYS` JSON variable. It does not deploy, sign, move funds or submit a launch. Vercel Firewall rate limits should be configured before announcing the endpoint broadly.
 
-Create the first Based.bid partner token locally, then sync it through the existing Vercel environment flow:
+Create a bearer token for any launchpad ID, then sync it through the existing Vercel environment flow:
 
 ```bash
-npm run partner:key -- based-bid
+npm run partner:key -- your-launchpad
 npm run env:vercel
 ```
 
@@ -125,7 +125,7 @@ The generator stores the token in ignored `.env.local`, applies owner-only file 
 
 The shareable showcase is available at `https://zeitmint.com/#sdk`, with partnership contact at `devs@zeitmint.com`.
 
-The Based.bid adapter maps public launch fields and fee intent into a review draft. Live submission remains disabled until Based.bid confirms its private endpoint, authentication, idempotency and error contract. See [`docs/integrations/based-bid.md`](docs/integrations/based-bid.md).
+The universal handoff maps public launch fields and fee intent into a review draft. Optional partner fields live under `options.extensions`; live submission remains disabled until each launchpad implements its own reviewed connector.
 
 ## Optional Robinhood Chain provenance
 

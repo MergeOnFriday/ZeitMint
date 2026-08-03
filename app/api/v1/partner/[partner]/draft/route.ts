@@ -1,7 +1,8 @@
 import {
-  createBasedBidDraft,
-  validateBasedBidDraftOptions,
+  createLaunchpadDraft,
   validateBundle,
+  validateLaunchpadDraftOptions,
+  validateLaunchpadId,
 } from "@zeitmint/launch-kit";
 import {
   authorizePartnerRequest,
@@ -14,8 +15,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export async function POST(request: Request) {
-  const authorization = authorizePartnerRequest(request, "based-bid");
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ partner: string }> },
+) {
+  const { partner } = await params;
+  const launchpad = validateLaunchpadId(partner);
+  if (!launchpad.valid) {
+    return partnerJson({ ok: false, issues: launchpad.issues }, 422);
+  }
+
+  const authorization = authorizePartnerRequest(request, launchpad.value);
   if (!authorization.ok) {
     return partnerJson(
       {
@@ -43,7 +53,7 @@ export async function POST(request: Request) {
 
   const [bundle, options] = [
     validateBundle(body.value.bundle),
-    validateBasedBidDraftOptions(body.value.options),
+    validateLaunchpadDraftOptions(body.value.options),
   ];
   const issues = [
     ...(bundle.valid ? [] : bundle.issues),
@@ -55,7 +65,7 @@ export async function POST(request: Request) {
 
   return partnerJson({
     ok: true,
-    draft: createBasedBidDraft(bundle.value, options.value),
+    draft: createLaunchpadDraft(bundle.value, launchpad.value, options.value),
   });
 }
 

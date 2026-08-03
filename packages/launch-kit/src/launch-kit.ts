@@ -1,7 +1,9 @@
 export const LAUNCH_KIT_SCHEMA_URL = "https://zeitmint.com/launch-kit.schema.json";
 
-export type ZeitMintChain = "solana" | "robinhood-chain" | "evm";
-export type ZeitMintLaunchpad = "emblem" | "based-bid" | "open-standard";
+export type KnownZeitMintChain = "solana" | "robinhood-chain" | "evm";
+export type KnownZeitMintLaunchpad = "emblem" | "open-standard";
+export type ZeitMintChain = KnownZeitMintChain | (string & {});
+export type ZeitMintLaunchpad = KnownZeitMintLaunchpad | (string & {});
 
 export type LaunchKitConcept = {
   name: string;
@@ -27,11 +29,9 @@ export function buildLaunchKit(
   handoff: LaunchKitHandoff = defaultHandoff,
 ) {
   const integrationStatus =
-    handoff.launchpad === "emblem"
-      ? "partnership-target"
-      : handoff.launchpad === "based-bid"
-        ? "integration-candidate"
-        : "open-standard";
+    handoff.launchpad === "open-standard"
+      ? "open-standard"
+      : "integration-candidate";
 
   return {
     $schema: LAUNCH_KIT_SCHEMA_URL,

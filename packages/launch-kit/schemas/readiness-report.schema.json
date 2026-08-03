@@ -20,8 +20,8 @@
         "xUrl": { "type": "string" },
         "telegramUrl": { "type": "string" },
         "artworkUrl": { "type": "string" },
-        "chain": { "enum": ["solana", "robinhood-chain", "evm"] },
-        "launchpad": { "enum": ["emblem", "based-bid", "open-standard"] },
+        "chain": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+        "launchpad": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" },
         "originalIdentityConfirmed": { "type": "boolean" },
         "noReturnsPromised": { "type": "boolean" },
         "creatorControlsProject": { "type": "boolean" }

@@ -1,5 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
 
 const schemas = [
   "launch-kit.schema.json",
@@ -29,13 +31,23 @@ for (const path of additionalJsonDocuments) {
   await readFile(new URL(`../${path}`, import.meta.url), "utf8").then(JSON.parse);
 }
 
-const [sdkPackage, capability] = await Promise.all([
+const [sdkPackage, capability, capabilitySchema] = await Promise.all([
   readFile(new URL("../packages/launch-kit/package.json", import.meta.url), "utf8").then(JSON.parse),
   readFile(new URL("../public/.well-known/zeitmint.json", import.meta.url), "utf8").then(JSON.parse),
+  readFile(new URL("../public/partner-capability.schema.json", import.meta.url), "utf8").then(JSON.parse),
 ]);
 
 if (sdkPackage.version !== capability.sdk.version) {
   console.error("SDK package and capability-manifest versions differ.");
+  process.exit(1);
+}
+
+const ajv = new Ajv2020({ allErrors: true, strict: true });
+addFormats(ajv);
+const validateCapability = ajv.compile(capabilitySchema);
+if (!validateCapability(capability)) {
+  console.error("Partner capability manifest does not match its schema.");
+  console.error(validateCapability.errors);
   process.exit(1);
 }
 

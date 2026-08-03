@@ -1,30 +1,48 @@
-import { NextResponse } from "next/server";
+import {
+  isSameOriginRequest,
+  publicJson,
+  readLimitedJson,
+} from "@/app/lib/public-request";
 import { isTelegramConfigured, sendTelegramMessage } from "@/app/lib/telegram";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const botPattern = /bot|crawler|spider|slurp|headless/i;
 
 export async function POST(request: Request) {
-  let body: { email?: unknown; company?: unknown };
-
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  if (!isSameOriginRequest(request)) {
+    return publicJson({ error: "Invalid origin." }, 403);
   }
 
-  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  const company = typeof body.company === "string" ? body.company.trim() : "";
+  const body = await readLimitedJson(request);
+  if (!body.ok) {
+    return publicJson({ error: body.message }, body.status);
+  }
+  if (typeof body.value !== "object" || body.value === null || Array.isArray(body.value)) {
+    return publicJson({ error: "Invalid request." }, 400);
+  }
 
-  if (company) return NextResponse.json({ ok: true });
+  const record = body.value as Record<string, unknown>;
+  const email = typeof record.email === "string" ? record.email.trim().toLowerCase() : "";
+  const company = typeof record.company === "string" ? record.company.trim() : "";
+  const startedAt = typeof record.startedAt === "number" ? record.startedAt : 0;
+  const elapsed = Date.now() - startedAt;
+  const looksAutomated =
+    Boolean(company) ||
+    botPattern.test(request.headers.get("user-agent") || "") ||
+    !Number.isSafeInteger(startedAt) ||
+    elapsed < 800 ||
+    elapsed > 24 * 60 * 60 * 1_000;
+
+  if (looksAutomated) return publicJson({ ok: true });
 
   if (!emailPattern.test(email) || email.length > 254) {
-    return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+    return publicJson({ error: "Enter a valid email address." }, 400);
   }
 
   if (!isTelegramConfigured()) {
-    return NextResponse.json(
-      { error: "The waitlist is not connected to Telegram yet." },
-      { status: 503 },
+    return publicJson(
+      { error: "The founding list is temporarily unavailable. Email devs@zeitmint.com instead." },
+      503,
     );
   }
 
@@ -36,11 +54,12 @@ export async function POST(request: Request) {
         `Time: ${new Date().toISOString()}`,
       ].join("\n"),
     );
-    return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json(
-      { error: "We couldn’t send your signup to Telegram. Please try again." },
-      { status: 502 },
+    return publicJson({ ok: true });
+  } catch (error) {
+    console.error("Waitlist notification failed", error instanceof Error ? error.message : "unknown-error");
+    return publicJson(
+      { error: "We couldn’t save your signup. Email devs@zeitmint.com instead." },
+      502,
     );
   }
 }

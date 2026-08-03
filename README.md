@@ -19,7 +19,7 @@ ZeitMint gives launchpads a structured intake layer before deployment. A creator
 | Utility Manifest v1 | Working mission builder, export and public JSON Schema |
 | [`@zeitmint/launch-kit`](https://www.npmjs.com/package/@zeitmint/launch-kit) | Universal v0.3.0 release with optional Uniswap v4 integration |
 | Partner API v1 | Versioned validation, capabilities and universal draft routes |
-| Crypto checkout | Non-transactional demo |
+| Founding pilot | 49 USDC planned price; no live checkout or payment collection |
 | Robinhood Chain provenance | Optional testnet experiment |
 
 The proposed partner flow, integration boundaries and design-partner questions are documented in [`docs/partner-integration.md`](docs/partner-integration.md).
@@ -81,11 +81,11 @@ TELEGRAM_CHAT_ID=your_chat_id
 
 To send alerts to a Telegram group instead, add the bot to that group, send a bot command in the group and run `npm run telegram:chat-id` again.
 
-## Crypto payment
+## Founding pilot and crypto payment boundary
 
-The current checkout is intentionally a non-transactional demo. It does not request a signature, move funds, or store private keys.
+The website does not currently contain a checkout. It does not request a payment signature, move funds or store private keys. The 49 USDC amount is a planned founding-pilot price, and the public call to action joins the founding list.
 
-For a simple production v1, use a wallet adapter and a 49 USDC transfer to a configured recipient, then verify the transaction server-side before creating the launch job. A custom contract is only necessary if you need escrow, refunds, or automatic revenue splits. Keep the payment recipient and network in Vercel environment variables.
+Before payment can be enabled, the product needs wallet-native transaction construction, server-side confirmation, replay protection, expiring orders and support/refund handling. A custom contract is only necessary if the product later needs escrow, refunds or automatic revenue splits.
 
 ## Launch Kit v1
 
@@ -162,7 +162,7 @@ This integration does not imply affiliation, partnership or endorsement by Robin
 
 ## Deploy to Vercel
 
-Copy `.env.example` to the ignored `.env.local` file and configure the deployment-specific public values and server-only secrets there. Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser; Telegram credentials must remain server-only.
+Copy `.env.example` to the ignored `.env.local` file and configure the deployment-specific values there. Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser; Telegram credentials and partner keys must remain server-only.
 
 The project includes a one-command deployment that securely syncs the private and public values to the already-linked Vercel project before deploying:
 
@@ -178,6 +178,8 @@ Verify production locally with:
 npm run build
 npm start
 ```
+
+The remaining Vercel, DNS, messaging, legal-review and abuse-control checks are tracked in [`docs/production-checklist.md`](docs/production-checklist.md).
 
 ## Repository policy
 

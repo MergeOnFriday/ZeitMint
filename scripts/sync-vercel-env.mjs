@@ -7,10 +7,6 @@ for (const file of [".env", ".env.local"]) {
 }
 
 const requiredVariableNames = [
-  "NEXT_PUBLIC_PAYMENT_NETWORK",
-  "NEXT_PUBLIC_PAYMENT_ASSET",
-  "NEXT_PUBLIC_PAYMENT_AMOUNT",
-  "NEXT_PUBLIC_PAYMENT_RECIPIENT",
   "TELEGRAM_BOT_TOKEN",
   "TELEGRAM_CHAT_ID",
 ];

@@ -1,16 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import {
-  createWalletClient,
-  custom,
-  defineChain,
-  isAddress,
-  keccak256,
-  toBytes,
-  type Address,
-  type EIP1193Provider,
-} from "viem";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import type { Address, EIP1193Provider } from "viem";
 import {
   buildLaunchKit,
   LAUNCH_KIT_SCHEMA_URL,
@@ -27,7 +18,7 @@ declare global {
   }
 }
 
-const robinhoodTestnet = defineChain({
+const robinhoodTestnet = {
   id: 46630,
   name: "Robinhood Chain Testnet",
   nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
@@ -41,7 +32,7 @@ const robinhoodTestnet = defineChain({
     },
   },
   testnet: true,
-});
+} as const;
 
 const creativeKitRegistryAbi = [
   {
@@ -238,8 +229,10 @@ export default function ZeitMintApp() {
   const [waitlistMessage, setWaitlistMessage] = useState("");
   const [waitlistPending, setWaitlistPending] = useState(false);
   const [partnerMessage, setPartnerMessage] = useState("");
+  const formStartedAtRef = useRef(0);
 
   useEffect(() => {
+    formStartedAtRef.current = Date.now();
     const storageKey = "zeitmint:visitor-notified";
 
     try {
@@ -368,17 +361,19 @@ export default function ZeitMintApp() {
       throw new Error("Install an EVM wallet such as Robinhood Wallet or MetaMask first.");
     }
 
+    const { createWalletClient, custom, defineChain } = await import("viem");
+    const chain = defineChain(robinhoodTestnet);
     const client = createWalletClient({
-      chain: robinhoodTestnet,
+      chain,
       transport: custom(window.ethereum),
     });
 
     try {
-      await client.switchChain({ id: robinhoodTestnet.id });
+      await client.switchChain({ id: chain.id });
     } catch (error) {
       const switchError = error as { code?: number; cause?: { code?: number } };
       if ((switchError.cause?.code ?? switchError.code) !== 4902) throw error;
-      await client.addChain({ chain: robinhoodTestnet });
+      await client.addChain({ chain });
     }
 
     return client;
@@ -409,6 +404,7 @@ export default function ZeitMintApp() {
       return;
     }
 
+    const { isAddress, keccak256, toBytes } = await import("viem");
     if (!configuredRegistryAddress || !isAddress(configuredRegistryAddress)) {
       setWalletMessage("The registry contract is ready but has not been deployed to testnet yet.");
       return;
@@ -442,6 +438,7 @@ export default function ZeitMintApp() {
     setWaitlistPending(true);
     const form = new FormData(formElement);
     const email = String(form.get("email") || "");
+    const startedAt = formStartedAtRef.current || Date.now() - 1_000;
     if (!email.includes("@")) {
       setWaitlistMessage("Enter a valid email to join.");
       setWaitlistPending(false);
@@ -455,12 +452,14 @@ export default function ZeitMintApp() {
         body: JSON.stringify({
           email,
           company: String(form.get("company") || ""),
+          startedAt,
         }),
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error || "Signup failed.");
       setWaitlistMessage("You’re on the founding list. We’ll be in touch.");
       formElement.reset();
+      formStartedAtRef.current = Date.now();
     } catch (error) {
       setWaitlistMessage(error instanceof Error ? error.message : "Signup failed.");
     } finally {
@@ -469,7 +468,8 @@ export default function ZeitMintApp() {
   }
 
   return (
-    <main>
+    <main id="main-content">
+      <a className="skip-link" href="#top">Skip to main content</a>
       <nav className="nav-shell" aria-label="Main navigation">
         <a className="brand" href="#top" aria-label="ZeitMint home">
           <BrandMark />
@@ -486,7 +486,7 @@ export default function ZeitMintApp() {
         </a>
       </nav>
 
-      <section className="hero" id="top">
+      <section className="hero" id="top" tabIndex={-1}>
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-orbit orbit-one" aria-hidden="true" />
         <div className="hero-orbit orbit-two" aria-hidden="true" />
@@ -1009,20 +1009,21 @@ export default function ZeitMintApp() {
 
       <section className="pricing section-shell" id="pricing">
         <div className="pricing-copy">
-          <span className="section-index">FOUNDING RELEASE</span>
-          <h2>One moment.<br />One differentiated launch kit.</h2>
+          <span className="section-index">FOUNDING PILOT</span>
+          <h2>A differentiated kit, with a human review.</h2>
           <p>
-            The readiness validator is free. When a project needs a complete
-            creative package, pay once and keep everything ZeitMint creates.
+            The validator and current builders are free to use. The planned assisted
+            package adds a scoped creative review and direct launchpad handoff support.
+            Join the founding list before sending any payment.
           </p>
         </div>
         <div className="price-card">
           <div className="price-card-top">
-            <span>CREATIVE LAUNCH KIT</span>
-            <span>FOUNDING PRICE</span>
+            <span>ASSISTED CREATIVE KIT</span>
+            <span>PLANNED FOUNDING PRICE</span>
           </div>
           <strong className="price">49 <small>USDC</small></strong>
-          <span className="price-note">crypto only · network fees separate</span>
+          <span className="price-note">pilot access · checkout is not live</span>
           <ul>
             <li>3 curated creative directions</li>
             <li>Cultural timing and audience angle</li>
@@ -1033,9 +1034,13 @@ export default function ZeitMintApp() {
             <li>Utility Manifest v1 and community mission builder</li>
             <li>Solana, Robinhood Chain or EVM preference</li>
           </ul>
-          <a className="button button-primary" href="#studio">
-            Build my Emblem-ready kit <span>↗</span>
+          <a className="button button-primary" href="#waitlist">
+            Request founding access <span>↗</span>
           </a>
+          <small className="payment-boundary">
+            No payment is collected on this website. ZeitMint will confirm scope,
+            network and the receiving address before any future transaction.
+          </small>
         </div>
       </section>
 
@@ -1046,7 +1051,16 @@ export default function ZeitMintApp() {
         </div>
         <form onSubmit={submitWaitlist} noValidate>
           <label className="sr-only" htmlFor="email">Email address</label>
-          <input id="email" name="email" type="email" placeholder="you@theinternet.xyz" />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            maxLength={254}
+            placeholder="you@theinternet.xyz"
+            required
+          />
           <input className="honeypot" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
           <button className="button button-dark" type="submit" disabled={waitlistPending}>
             {waitlistPending ? "Joining…" : "Join the founding list ↗"}
@@ -1054,7 +1068,8 @@ export default function ZeitMintApp() {
           {waitlistMessage ? <p aria-live="polite">{waitlistMessage}</p> : null}
           <small>
             Anonymous visit alerts are sent once per browser session. IP addresses
-            are not included in those alerts.
+            are not included in those alerts. By joining, you acknowledge the {" "}
+            <a href="/privacy">Privacy Notice</a> and <a href="/terms">Terms</a>.
           </small>
         </form>
       </section>
@@ -1072,6 +1087,8 @@ export default function ZeitMintApp() {
           <a href="#sdk">SDK</a>
           <a href="#how">Principles</a>
           <a href="mailto:devs@zeitmint.com">Partner</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
         </div>
         <span>© 2026 ZeitMint · Independent project</span>
       </footer>

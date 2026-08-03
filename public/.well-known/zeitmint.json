@@ -13,6 +13,14 @@
   "partnerApi": "https://zeitmint.com/partner-api.json",
   "capabilities": "https://zeitmint.com/api/v1/partner/capabilities",
   "partnerAuthentication": "bearer",
+  "integrations": [
+    {
+      "id": "uniswap-v4",
+      "packageExport": "@zeitmint/launch-kit/integrations/uniswap-v4",
+      "mode": "intent-only",
+      "executesOnchain": false
+    }
+  ],
   "boundaries": {
     "deploysTokens": false,
     "signsTransactions": false,

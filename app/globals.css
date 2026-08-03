@@ -77,6 +77,24 @@ select:focus-visible {
   border: 0;
 }
 
+.skip-link {
+  background: var(--lime);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 760;
+  left: 16px;
+  padding: 12px 16px;
+  position: fixed;
+  top: 12px;
+  transform: translateY(-160%);
+  transition: transform 120ms ease;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 .nav-shell {
   align-items: center;
   background: rgba(242, 240, 233, 0.9);
@@ -2405,6 +2423,14 @@ footer a:hover {
 
 .price-card .button { width: 100%; }
 
+.payment-boundary {
+  color: #8f948f;
+  display: block;
+  font-size: 9px;
+  line-height: 1.6;
+  margin-top: 18px;
+}
+
 .waitlist {
   align-items: end;
   background: var(--lime);
@@ -2437,6 +2463,7 @@ footer a:hover {
 .waitlist input::placeholder { color: #5a6b1f; }
 .waitlist form p { font-size: 11px; margin: 6px 0 0; }
 .waitlist form small { color: #4e5d1d; font-size: 9px; line-height: 1.5; }
+.waitlist form small a { font-weight: 760; text-decoration: underline; text-underline-offset: 2px; }
 
 .waitlist .honeypot {
   height: 0;
@@ -2461,6 +2488,112 @@ footer {
 footer > p { color: #767c76; }
 footer > div { display: flex; gap: 22px; }
 footer > span { color: #767c76; }
+
+.legal-page {
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+.legal-nav {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding: 22px 5vw;
+}
+
+.legal-hero {
+  background: var(--ink);
+  color: var(--white);
+  padding: 88px max(5vw, calc((100vw - 920px) / 2));
+}
+
+.legal-hero h1,
+.system-page h1 {
+  font-size: clamp(48px, 7vw, 88px);
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+  margin: 28px 0;
+  max-width: 900px;
+}
+
+.legal-hero p {
+  color: #c1c5c0;
+  font-size: 18px;
+  line-height: 1.65;
+  max-width: 720px;
+}
+
+.legal-hero small {
+  color: #7f867f;
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  margin-top: 30px;
+  text-transform: uppercase;
+}
+
+.legal-document {
+  margin: 0 auto;
+  max-width: 920px;
+  padding: 72px 5vw 100px;
+}
+
+.legal-document section {
+  border-top: 1px solid var(--line);
+  padding: 34px 0;
+}
+
+.legal-document h2 {
+  font-size: clamp(25px, 3vw, 36px);
+  letter-spacing: -0.045em;
+  margin-bottom: 18px;
+}
+
+.legal-document h3 {
+  font-size: 16px;
+  margin: 26px 0 8px;
+}
+
+.legal-document p,
+.legal-document li {
+  color: #4f544f;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.legal-document a {
+  text-decoration: underline;
+  text-decoration-color: var(--lime-deep);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.legal-document ul {
+  list-style: disc;
+  padding-left: 22px;
+}
+
+.legal-footer {
+  grid-template-columns: 1fr auto;
+}
+
+.system-page {
+  align-items: flex-start;
+  background: var(--ink);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 8vw;
+}
+
+.system-page p {
+  color: #aeb4ae;
+  font-size: 18px;
+  margin-bottom: 34px;
+}
 
 @media (max-width: 1050px) {
   .hero {
@@ -2566,6 +2699,10 @@ footer > span { color: #767c76; }
   .price { font-size: 84px; }
   .waitlist { padding: 68px 5vw; }
   footer { grid-template-columns: 1fr; }
+  .legal-nav { padding: 16px 5vw; }
+  .legal-hero { padding-bottom: 64px; padding-top: 64px; }
+  .legal-document { padding-bottom: 72px; padding-top: 42px; }
+  .legal-footer { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

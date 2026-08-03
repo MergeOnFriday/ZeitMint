@@ -14,21 +14,25 @@ export async function sendTelegramMessage(text: string) {
   if (!botToken || !chatId) {
     throw new Error("Telegram notifications are not configured.");
   }
+  if (!text || text.length > 4_000) {
+    throw new Error("Telegram notification length is invalid.");
+  }
 
   const response = await fetch(
     `https://api.telegram.org/bot${botToken}/sendMessage`,
     {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { accept: "application/json", "content-type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
         text,
         disable_web_page_preview: true,
       }),
       cache: "no-store",
+      signal: AbortSignal.timeout(8_000),
     },
   );
-  const result = (await response.json()) as TelegramResponse;
+  const result = await response.json().catch(() => ({})) as TelegramResponse;
 
   if (!response.ok || !result.ok) {
     throw new Error(result.description || "Telegram rejected the notification.");

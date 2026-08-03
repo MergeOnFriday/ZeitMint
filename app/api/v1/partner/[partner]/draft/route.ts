@@ -51,6 +51,23 @@ export async function POST(
     );
   }
 
+  const unknownFields = Object.keys(body.value).filter(
+    (key) => key !== "bundle" && key !== "options",
+  );
+  if (unknownFields.length > 0) {
+    return partnerJson(
+      {
+        ok: false,
+        issues: unknownFields.map((key) => ({
+          path: `/${key}`,
+          code: "additionalProperties",
+          message: "Unknown partner draft request field.",
+        })),
+      },
+      422,
+    );
+  }
+
   const [bundle, options] = [
     validateBundle(body.value.bundle),
     validateLaunchpadDraftOptions(body.value.options),

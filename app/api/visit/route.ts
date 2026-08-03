@@ -1,50 +1,46 @@
-import { NextResponse } from "next/server";
+import {
+  isSameOriginRequest,
+  oneLine,
+  publicJson,
+  readLimitedJson,
+} from "@/app/lib/public-request";
 import { isTelegramConfigured, sendTelegramMessage } from "@/app/lib/telegram";
 
 const botPattern = /bot|crawler|spider|slurp|headless|preview/i;
 
 export async function POST(request: Request) {
-  const origin = request.headers.get("origin");
-  const host = request.headers.get("x-forwarded-host") || request.headers.get("host");
-
-  if (origin && host) {
-    try {
-      if (new URL(origin).host !== host) {
-        return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
-      }
-    } catch {
-      return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
-    }
+  if (!isSameOriginRequest(request)) {
+    return publicJson({ error: "Invalid origin." }, 403);
   }
 
   const userAgent = request.headers.get("user-agent") || "";
   if (botPattern.test(userAgent) || !isTelegramConfigured()) {
-    return NextResponse.json({ ok: true, skipped: true });
+    return publicJson({ ok: true, skipped: true });
   }
 
-  let body: { path?: unknown; referrer?: unknown };
-
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  const body = await readLimitedJson(request);
+  if (!body.ok) {
+    return publicJson({ error: body.message }, body.status);
   }
-
-  const path = typeof body.path === "string" ? body.path.slice(0, 120) : "/";
-  const referrer =
-    typeof body.referrer === "string" ? body.referrer.slice(0, 120) : "Direct";
+  const record = typeof body.value === "object" && body.value !== null && !Array.isArray(body.value)
+    ? body.value as Record<string, unknown>
+    : {};
+  const submittedPath = oneLine(record.path, "/", 120);
+  const path = submittedPath.startsWith("/") ? submittedPath : "/";
+  const referrer = oneLine(record.referrer, "Direct", 120);
 
   try {
     await sendTelegramMessage(
       [
         "👀 New ZeitMint visitor",
-        `Page: ${path || "/"}`,
-        `From: ${referrer || "Direct"}`,
+        `Page: ${path}`,
+        `From: ${referrer}`,
         `Time: ${new Date().toISOString()}`,
       ].join("\n"),
     );
-    return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: "Notification failed." }, { status: 502 });
+    return publicJson({ ok: true });
+  } catch (error) {
+    console.error("Visit notification failed", error instanceof Error ? error.message : "unknown-error");
+    return publicJson({ error: "Notification failed." }, 502);
   }
 }

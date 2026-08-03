@@ -35,7 +35,7 @@ The `@zeitmint/launch-kit` workspace exposes parsing, deterministic validation, 
 - Bundle validation: `POST /api/v1/partner/validate`
 - Universal draft mapping: `POST /api/v1/partner/{partner}/draft`
 
-The partner-neutral v0.2.0 release is published on npm and ready for integration testing.
+The partner-neutral v0.3.0 release is published on npm and ready for integration testing. EVM launchpads can opt into the separate Uniswap v4 PoolKey and hook-intent module without adding a Uniswap dependency to the universal or Solana handoff.
 
 ## Trust boundaries
 

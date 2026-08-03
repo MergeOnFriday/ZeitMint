@@ -29,7 +29,7 @@ The `@zeitmint/launch-kit` v0.1 workspace exposes parsing, deterministic validat
 ## Integration entry points
 
 - SDK source: `packages/launch-kit`
-- OpenAPI: `https://zeitmint.com/openapi.json`
+- Partner API contract: `https://zeitmint.com/partner-api.json`
 - Discovery: `https://zeitmint.com/.well-known/zeitmint.json`
 - Capabilities: `GET /api/v1/partner/capabilities`
 - Bundle validation: `POST /api/v1/partner/validate`

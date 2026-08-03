@@ -3,7 +3,7 @@
   "$id": "https://zeitmint.com/partner-capability.schema.json",
   "title": "ZeitMint Partner Capability",
   "type": "object",
-  "required": ["$schema", "name", "url", "contact", "apiVersion", "sdk", "openapi", "capabilities", "partnerAuthentication", "boundaries"],
+  "required": ["$schema", "name", "url", "contact", "apiVersion", "sdk", "partnerApi", "capabilities", "partnerAuthentication", "boundaries"],
   "properties": {
     "$schema": { "const": "https://zeitmint.com/partner-capability.schema.json" },
     "name": { "const": "ZeitMint" },
@@ -21,7 +21,7 @@
       },
       "additionalProperties": false
     },
-    "openapi": { "type": "string", "format": "uri" },
+    "partnerApi": { "type": "string", "format": "uri" },
     "capabilities": { "type": "string", "format": "uri" },
     "partnerAuthentication": { "const": "bearer" },
     "boundaries": {

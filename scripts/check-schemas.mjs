@@ -9,7 +9,7 @@ const schemas = [
 
 const additionalJsonDocuments = [
   "public/.well-known/zeitmint.json",
-  "public/openapi.json",
+  "public/partner-api.json",
   "public/partner-capability.schema.json",
 ];
 

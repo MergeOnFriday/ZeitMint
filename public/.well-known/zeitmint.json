@@ -10,7 +10,7 @@
     "status": "partner-testing",
     "repository": "https://github.com/MergeOnFriday/zeitmint/tree/main/packages/launch-kit"
   },
-  "openapi": "https://zeitmint.com/openapi.json",
+  "partnerApi": "https://zeitmint.com/partner-api.json",
   "capabilities": "https://zeitmint.com/api/v1/partner/capabilities",
   "partnerAuthentication": "bearer",
   "boundaries": {

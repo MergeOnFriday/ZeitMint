@@ -860,8 +860,8 @@ export default function ZeitMintApp() {
               <a className="button button-primary" href="mailto:devs@zeitmint.com?subject=ZeitMint%20SDK%20integration">
                 Start partner testing <span>↗</span>
               </a>
-              <a className="text-link light-link" href="/openapi.json" target="_blank" rel="noreferrer">
-                Inspect OpenAPI <span>↗</span>
+              <a className="text-link light-link" href="/partner-api.json" target="_blank" rel="noreferrer">
+                Inspect Partner API <span>↗</span>
               </a>
             </div>
           </div>

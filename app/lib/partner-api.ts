@@ -24,7 +24,7 @@ export const partnerCapabilities = {
     repository: "https://github.com/MergeOnFriday/zeitmint/tree/main/packages/launch-kit",
   },
   specifications: {
-    openapi: "https://zeitmint.com/openapi.json",
+    partnerApi: "https://zeitmint.com/partner-api.json",
     launchKit: "https://zeitmint.com/launch-kit.schema.json",
     utilityManifest: "https://zeitmint.com/utility-manifest.schema.json",
     readinessReport: "https://zeitmint.com/readiness-report.schema.json",

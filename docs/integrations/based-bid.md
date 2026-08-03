@@ -43,7 +43,7 @@ Authorization: Bearer <partner-token>
 }
 ```
 
-The complete request schema is published in `public/openapi.json`.
+The complete request schema is published in `public/partner-api.json`.
 
 Partner tokens are stored only in the server-side `ZEITMINT_PARTNER_KEYS` JSON environment variable. Based.bid receives its own long random token; no token is shipped in the SDK or browser.
 

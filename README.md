@@ -109,7 +109,7 @@ The deployed partner API exposes:
 - `GET /api/v1/partner/capabilities`
 - `POST /api/v1/partner/validate`
 - `POST /api/v1/partner/based-bid/draft`
-- `GET /openapi.json`
+- `GET /partner-api.json`
 - `GET /.well-known/zeitmint.json`
 
 The API is stateless, performs no network calls from submitted content and limits request bodies to 256 KiB. Public bundle validation is unauthenticated; partner draft routes require a partner-specific bearer token configured in the server-only `ZEITMINT_PARTNER_KEYS` JSON variable. It does not deploy, sign, move funds or submit a launch. Vercel Firewall rate limits should be configured before announcing the endpoint broadly.

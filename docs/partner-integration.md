@@ -24,7 +24,18 @@ The current integration surface is intentionally small and portable:
 - `app/lib/utility-manifest.ts`
 - `app/lib/readiness.ts`
 
-The planned `@zeitmint/launch-kit` package will expose parsing, deterministic validation and mapping helpers. It will not deploy tokens, move funds or take control of a launchpad workflow.
+The `@zeitmint/launch-kit` v0.1 workspace exposes parsing, deterministic validation, bundle consistency and mapping helpers. The versioned Partner API provides the same validation contract over HTTP. Neither surface deploys tokens, moves funds or takes control of a launchpad workflow.
+
+## Integration entry points
+
+- SDK source: `packages/launch-kit`
+- OpenAPI: `https://zeitmint.com/openapi.json`
+- Discovery: `https://zeitmint.com/.well-known/zeitmint.json`
+- Capabilities: `GET /api/v1/partner/capabilities`
+- Bundle validation: `POST /api/v1/partner/validate`
+- Based.bid draft mapping: `POST /api/v1/partner/based-bid/draft`
+
+The SDK is ready for partner testing. Public npm publication is a distribution task and remains pending until a ZeitMint npm organization is configured.
 
 ## Trust boundaries
 
@@ -44,7 +55,7 @@ A useful first pilot would use sample or testnet projects and answer four questi
 3. What should be imported automatically versus reviewed manually?
 4. Which completion receipts would make community utility verifiable without adding custody?
 
-The smallest technical pilot is a read-only importer that accepts Launch Kit v1 and Utility Manifest v1, validates them against the schemas and creates a launchpad-owned draft.
+The smallest technical pilot is a read-only importer that accepts Launch Kit v1, Utility Manifest v1 and the readiness report, validates them against the schemas and creates a launchpad-owned draft. That importer can use the SDK directly or call the Partner API.
 
 ## Contact
 

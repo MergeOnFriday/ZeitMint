@@ -189,21 +189,27 @@ const chainOptions: Array<{
 const sdkInstallCommand = "npm install @zeitmint/launch-kit";
 
 const sdkIntegrationExample = `import {
-  parseLaunchKit,
-  parseUtilityManifest,
+  createBasedBidDraft,
+  validateBundle,
 } from "@zeitmint/launch-kit";
 
 const payload = await request.json();
-const kit = parseLaunchKit(payload.launchKit);
-const utility = parseUtilityManifest(payload.utilityManifest);
+const result = validateBundle(payload);
 
-await launchpad.drafts.create({
-  chain: kit.handoff.preferredChain,
-  name: kit.token.name,
-  symbol: kit.token.symbol,
-  creative: kit.creative,
-  utility,
-});`;
+if (!result.valid) {
+  return Response.json(
+    { issues: result.issues },
+    { status: 422 },
+  );
+}
+
+const draft = createBasedBidDraft(
+  result.value,
+  { chain: "solana", launchType: "pool" },
+);
+
+// Partner reviews and submits the draft.
+return Response.json({ draft });`;
 
 function BrandMark() {
   return (
@@ -340,9 +346,9 @@ export default function ZeitMintApp() {
     const intro = [
       "Hey — I’m building ZeitMint, the creative layer before a token launch.",
       "",
-      "Creators get launch-readiness checks, a differentiated identity, a community mission and structured manifests. Launchpads get a small, non-custodial import format with Solana as the default and EVM support built in.",
+      "Creators get launch-readiness checks, a differentiated identity, a community mission and structured manifests. Launchpads get a tested, non-custodial SDK, versioned schemas and a stateless validation API with Solana as the default and EVM support built in.",
       "",
-      "Emblem is our primary partnership target, and we’re opening the package design to launchpads and token projects that want to shape the integration.",
+      "The SDK is ready for partner testing. The Based.bid draft adapter is implemented, and Emblem remains our preferred launchpad design target.",
       "",
       `SDK showcase: ${showcaseUrl}`,
       "Contact: devs@zeitmint.com",
@@ -840,22 +846,22 @@ export default function ZeitMintApp() {
         <div className="sdk-heading">
           <div>
             <span className="section-index">04 / FOR LAUNCHPADS</span>
-            <span className="sdk-status"><i /> PACKAGE PREVIEW · DESIGN PARTNERS WANTED</span>
+            <span className="sdk-status"><i /> SDK v0.1 · READY FOR PARTNER TESTING</span>
             <h2>One creative format.<br />Any launch workflow.</h2>
           </div>
           <div className="sdk-heading-copy">
             <p>
-              The planned <strong>@zeitmint/launch-kit</strong> package gives
-              launchpads a typed way to validate both the creative Launch Kit
-              and Utility Manifest, then map them into their own draft flow. No
-              custody, deployment or liquidity logic is hidden inside it.
+              <strong>@zeitmint/launch-kit</strong> now ships typed builders,
+              JSON Schema validation, bundle consistency checks and partner draft
+              adapters in ESM and CommonJS. No custody, deployment or liquidity
+              logic is hidden inside it.
             </p>
             <div className="sdk-actions">
               <a className="button button-primary" href="mailto:devs@zeitmint.com?subject=ZeitMint%20SDK%20integration">
-                Discuss an integration <span>↗</span>
+                Start partner testing <span>↗</span>
               </a>
-              <a className="text-link light-link" href="/launch-kit.schema.json" target="_blank" rel="noreferrer">
-                Inspect the launch schema <span>↗</span>
+              <a className="text-link light-link" href="/openapi.json" target="_blank" rel="noreferrer">
+                Inspect OpenAPI <span>↗</span>
               </a>
             </div>
           </div>
@@ -866,20 +872,20 @@ export default function ZeitMintApp() {
             <div className="sdk-window-bar">
               <span><i /><i /><i /></span>
               <strong>launchpad-adapter.ts</strong>
-              <small>API PREVIEW</small>
+              <small>TESTED API</small>
             </div>
             <div className="sdk-install-row">
               <span>$</span>
               <code>{sdkInstallCommand}</code>
-              <small>PLANNED PACKAGE NAME</small>
+              <small>NPM PUBLICATION PENDING</small>
             </div>
             <pre aria-label="ZeitMint SDK integration example"><code>{sdkIntegrationExample}</code></pre>
           </div>
 
           <div className="sdk-payload-card">
             <div className="payload-heading">
-              <span>LAUNCH + UTILITY</span>
-              <strong>VALID JSON</strong>
+              <span>LAUNCH + UTILITY + READINESS</span>
+              <strong>SCHEMA VALID</strong>
             </div>
             <div className="payload-token">
               <div className="payload-mark">AI</div>
@@ -890,29 +896,31 @@ export default function ZeitMintApp() {
               </div>
             </div>
             <dl className="payload-fields">
-              <div><dt>preferredLaunchpad</dt><dd>emblem</dd></div>
+              <div><dt>adapter</dt><dd>based-bid</dd></div>
               <div><dt>preferredChain</dt><dd>solana</dd></div>
               <div><dt>utility.type</dt><dd>community-bounties</dd></div>
               <div><dt>creatorApproval</dt><dd>true</dd></div>
               <div><dt>deploysToken</dt><dd>false</dd></div>
             </dl>
-            <p>Identity, creative direction, campaign copy and handoff boundaries—without taking control away from the launchpad.</p>
+            <p>A review-ready partner draft with explicit missing fields and intent-only fee settings—without taking control away from the launchpad.</p>
           </div>
         </div>
 
         <div className="sdk-flow" aria-label="Launch Kit integration flow">
-          <article><span>01</span><strong>Creator builds</strong><p>ZeitMint produces the identity, campaign, mission and structured manifests.</p></article>
-          <article><span>02</span><strong>Package validates</strong><p>The SDK checks predictable schemas and exposes typed fields.</p></article>
-          <article><span>03</span><strong>Launchpad imports</strong><p>Your platform keeps control of contracts, rewards, liquidity and deployment.</p></article>
+          <article><span>01 · SDK</span><strong>Validate locally</strong><p>Typed ESM/CommonJS package, versioned schemas and consistent issue paths.</p></article>
+          <article><span>02 · API</span><strong>Validate remotely</strong><p>POST a bundle to /api/v1/partner/validate with a strict 256 KiB request limit.</p></article>
+          <article><span>03 · ADAPTER</span><strong>Map the draft</strong><p>The Based.bid mapper is ready behind partner bearer auth; final submission remains launchpad-owned.</p></article>
         </div>
 
         <div className="partner-showcase">
           <div>
             <span>PARTNERSHIP SHOWCASE</span>
-            <h3>Let’s make ZeitMint native to your launch flow.</h3>
+            <h3>The integration surface is ready for dev review.</h3>
             <p>
-              We are looking for Emblem and a small group of launchpads or token
-              projects to shape the first adapter, utility mapping and creator handoff.
+              Based.bid draft mapping is implemented against the public launch fields.
+              Live submission stays disabled until their devs confirm endpoint,
+              authentication, idempotency and error semantics. Emblem remains the
+              preferred design-partner target for the Solana-first handoff.
             </p>
           </div>
           <div className="partner-showcase-actions">
@@ -924,8 +932,9 @@ export default function ZeitMintApp() {
           </div>
         </div>
         <p className="sdk-disclaimer">
-          Package and adapter APIs shown here are a product preview and are not
-          yet published to npm. Emblem is a partnership target, not a current affiliation.
+          SDK source, tests and API contracts are ready for partner testing; public npm
+          publication is pending account setup. Adapter availability does not imply a
+          completed partnership or endorsement. Partners retain final launch control.
         </p>
       </section>
 

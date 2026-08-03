@@ -2,20 +2,31 @@
   "name": "zeitmint",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
+    "predev": "npm run sdk:build",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run sdk:build && next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern .next",
+    "sdk:build": "npm run build --workspace @zeitmint/launch-kit",
+    "sdk:test": "npm run test --workspace @zeitmint/launch-kit",
+    "sdk:pack": "mkdir -p artifacts && npm pack --workspace @zeitmint/launch-kit --pack-destination ./artifacts",
+    "schema:check": "node scripts/check-schemas.mjs",
+    "check": "npm run schema:check && npm run sdk:test && npm run lint && npm run build",
+    "partner:key": "node scripts/generate-partner-key.mjs",
     "telegram:chat-id": "node scripts/get-telegram-chat-id.mjs",
     "env:vercel": "node scripts/sync-vercel-env.mjs",
     "deploy": "npm run env:vercel && vercel --prod"
   },
   "dependencies": {
-    "next": "16.2.6",
+    "@zeitmint/launch-kit": "0.1.0",
+    "next": "16.2.12",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "viem": "^2.55.10"
@@ -24,9 +35,16 @@
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.2.12",
+    "tsup": "^8.5.0",
     "typescript": "5.9.3"
+  },
+  "overrides": {
+    "@babel/core": "7.29.7",
+    "esbuild": "0.28.1",
+    "postcss": "8.5.25",
+    "sharp": "0.35.3"
   },
   "type": "module"
 }

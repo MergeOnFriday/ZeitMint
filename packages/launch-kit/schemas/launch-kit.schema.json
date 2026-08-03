@@ -41,11 +41,7 @@
       "type": "object",
       "required": ["posts"],
       "properties": {
-        "posts": {
-          "type": "array",
-          "minItems": 1,
-          "items": { "type": "string" }
-        }
+        "posts": { "type": "array", "minItems": 1, "items": { "type": "string" } }
       },
       "additionalProperties": false
     },
@@ -54,20 +50,10 @@
       "required": ["mode", "preferredLaunchpad", "preferredChain", "integrationStatus", "launchpadControls"],
       "properties": {
         "mode": { "const": "launchpad-ready" },
-        "preferredLaunchpad": {
-          "enum": ["emblem", "based-bid", "open-standard"]
-        },
-        "preferredChain": {
-          "enum": ["solana", "robinhood-chain", "evm"]
-        },
-        "integrationStatus": {
-          "enum": ["partnership-target", "integration-candidate", "open-standard"]
-        },
-        "launchpadControls": {
-          "type": "array",
-          "items": { "type": "string" },
-          "uniqueItems": true
-        }
+        "preferredLaunchpad": { "enum": ["emblem", "based-bid", "open-standard"] },
+        "preferredChain": { "enum": ["solana", "robinhood-chain", "evm"] },
+        "integrationStatus": { "enum": ["partnership-target", "integration-candidate", "open-standard"] },
+        "launchpadControls": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
       },
       "additionalProperties": false
     },

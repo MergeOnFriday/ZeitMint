@@ -1,0 +1,79 @@
+{
+  "name": "@zeitmint/launch-kit",
+  "version": "0.1.0",
+  "description": "Typed launch-readiness, utility and partner-handoff primitives for token launch platforms.",
+  "keywords": [
+    "zeitmint",
+    "launchpad",
+    "solana",
+    "token",
+    "sdk"
+  ],
+  "license": "MIT",
+  "author": "ZeitMint <devs@zeitmint.com>",
+  "homepage": "https://zeitmint.com/#sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MergeOnFriday/zeitmint.git",
+    "directory": "packages/launch-kit"
+  },
+  "bugs": {
+    "url": "https://github.com/MergeOnFriday/zeitmint/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./launch-kit": {
+      "types": "./dist/launch-kit.d.ts",
+      "import": "./dist/launch-kit.js",
+      "require": "./dist/launch-kit.cjs"
+    },
+    "./utility-manifest": {
+      "types": "./dist/utility-manifest.d.ts",
+      "import": "./dist/utility-manifest.js",
+      "require": "./dist/utility-manifest.cjs"
+    },
+    "./readiness": {
+      "types": "./dist/readiness.d.ts",
+      "import": "./dist/readiness.js",
+      "require": "./dist/readiness.cjs"
+    },
+    "./adapters/based-bid": {
+      "types": "./dist/adapters/based-bid.d.ts",
+      "import": "./dist/adapters/based-bid.js",
+      "require": "./dist/adapters/based-bid.cjs"
+    },
+    "./schemas/*": "./schemas/*"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3"
+  }
+}

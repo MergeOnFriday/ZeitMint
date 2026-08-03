@@ -17,7 +17,8 @@ ZeitMint gives launchpads a structured intake layer before deployment. A creator
 | Launch-readiness validator | Working browser implementation |
 | Launch Kit v1 | Working builder, export and public JSON Schema |
 | Utility Manifest v1 | Working mission builder, export and public JSON Schema |
-| `@zeitmint/launch-kit` | Integration preview; not yet published to npm |
+| `@zeitmint/launch-kit` | Tested v0.1 source package; npm publication pending |
+| Partner API v1 | Versioned validation, capabilities and Based.bid draft routes |
 | Crypto checkout | Non-transactional demo |
 | Robinhood Chain provenance | Optional testnet experiment |
 
@@ -92,13 +93,39 @@ The studio creates a stable JSON package containing token metadata, creative dir
 
 The public JSON Schema lives at `/launch-kit.schema.json`. The implementation in `app/lib/launch-kit.ts` is the starting point for a future `@zeitmint/launch-kit` SDK with helpers for launchpads to validate and import kits.
 
-## npm package preview
+## Partner SDK and API
 
-The homepage includes a developer showcase for the planned `@zeitmint/launch-kit` package. It demonstrates the intended launchpad integration surface: parse and validate both Launch Kit v1 and Utility Manifest v1, read their preferred chain and map the creative and utility fields into a launchpad-owned draft flow.
+The `packages/launch-kit` workspace contains the real `@zeitmint/launch-kit` v0.1 package. It builds ESM, CommonJS and TypeScript declarations; validates all three public schemas; checks name, ticker and chain consistency across a bundle; and maps an approved bundle into a launchpad-owned draft.
 
-The package is not published to npm yet. The install command and API shown on the website are explicitly labeled as a preview for Emblem and other prospective design partners. The public JSON Schema and the local `buildLaunchKit` implementation are available now; deployment, custody, tokenomics and liquidity remain launchpad responsibilities.
+The package is not published to npm yet because the ZeitMint npm organization and release credentials still need to be created. This affects distribution, not the source package or test surface. Build, test and inspect the tarball locally with:
+
+```bash
+npm run sdk:test
+npm run sdk:pack
+```
+
+The deployed partner API exposes:
+
+- `GET /api/v1/partner/capabilities`
+- `POST /api/v1/partner/validate`
+- `POST /api/v1/partner/based-bid/draft`
+- `GET /openapi.json`
+- `GET /.well-known/zeitmint.json`
+
+The API is stateless, performs no network calls from submitted content and limits request bodies to 256 KiB. Public bundle validation is unauthenticated; partner draft routes require a partner-specific bearer token configured in the server-only `ZEITMINT_PARTNER_KEYS` JSON variable. It does not deploy, sign, move funds or submit a launch. Vercel Firewall rate limits should be configured before announcing the endpoint broadly.
+
+Create the first Based.bid partner token locally, then sync it through the existing Vercel environment flow:
+
+```bash
+npm run partner:key -- based-bid
+npm run env:vercel
+```
+
+The generator stores the token in ignored `.env.local`, applies owner-only file permissions and prints the new token once so it can be shared privately. Use `--rotate` to replace an existing partner token.
 
 The shareable showcase is available at `https://zeitmint.com/#sdk`, with partnership contact at `devs@zeitmint.com`.
+
+The Based.bid adapter maps public launch fields and fee intent into a review draft. Live submission remains disabled until Based.bid confirms its private endpoint, authentication, idempotency and error contract. See [`docs/integrations/based-bid.md`](docs/integrations/based-bid.md).
 
 ## Optional Robinhood Chain provenance
 
@@ -154,4 +181,4 @@ npm start
 
 - Report security issues privately using [`SECURITY.md`](SECURITY.md).
 - Review contribution expectations in [`CONTRIBUTING.md`](CONTRIBUTING.md).
-- This partner-preview repository is source-available for evaluation under the current [`LICENSE`](LICENSE). No open-source license is granted yet; SDK licensing will be selected before the package is published.
+- The website remains source-available for partner evaluation under the root [`LICENSE`](LICENSE). The standalone SDK in `packages/launch-kit` is MIT licensed for integration and adoption.

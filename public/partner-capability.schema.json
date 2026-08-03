@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zeitmint.com/partner-capability.schema.json",
+  "title": "ZeitMint Partner Capability",
+  "type": "object",
+  "required": ["$schema", "name", "url", "contact", "apiVersion", "sdk", "openapi", "capabilities", "partnerAuthentication", "boundaries"],
+  "properties": {
+    "$schema": { "const": "https://zeitmint.com/partner-capability.schema.json" },
+    "name": { "const": "ZeitMint" },
+    "url": { "type": "string", "format": "uri" },
+    "contact": { "type": "string", "format": "email" },
+    "apiVersion": { "const": "1.0" },
+    "sdk": {
+      "type": "object",
+      "required": ["package", "version", "status", "repository"],
+      "properties": {
+        "package": { "const": "@zeitmint/launch-kit" },
+        "version": { "type": "string" },
+        "status": { "enum": ["partner-testing", "stable"] },
+        "repository": { "type": "string", "format": "uri" }
+      },
+      "additionalProperties": false
+    },
+    "openapi": { "type": "string", "format": "uri" },
+    "capabilities": { "type": "string", "format": "uri" },
+    "partnerAuthentication": { "const": "bearer" },
+    "boundaries": {
+      "type": "object",
+      "required": ["deploysTokens", "signsTransactions", "movesFunds", "configuresLiquidity", "requiresPartnerApproval"],
+      "properties": {
+        "deploysTokens": { "const": false },
+        "signsTransactions": { "const": false },
+        "movesFunds": { "const": false },
+        "configuresLiquidity": { "const": false },
+        "requiresPartnerApproval": { "const": true }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

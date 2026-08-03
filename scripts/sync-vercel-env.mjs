@@ -14,7 +14,10 @@ const requiredVariableNames = [
   "TELEGRAM_BOT_TOKEN",
   "TELEGRAM_CHAT_ID",
 ];
-const optionalVariableNames = ["NEXT_PUBLIC_RH_REGISTRY_ADDRESS"];
+const optionalVariableNames = [
+  "NEXT_PUBLIC_RH_REGISTRY_ADDRESS",
+  "ZEITMINT_PARTNER_KEYS",
+];
 const variableNames = [
   ...requiredVariableNames,
   ...optionalVariableNames.filter((name) => process.env[name]),

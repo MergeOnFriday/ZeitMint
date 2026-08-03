@@ -1,0 +1,138 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ZeitMint Partner API",
+    "version": "1.0.0",
+    "description": "Stateless validation and launchpad-draft mapping for ZeitMint launch bundles. These endpoints do not deploy tokens, sign transactions, move funds or configure liquidity.",
+    "contact": { "email": "devs@zeitmint.com", "url": "https://zeitmint.com/#sdk" },
+    "license": { "name": "Partner evaluation", "url": "https://github.com/MergeOnFriday/zeitmint/blob/main/LICENSE" }
+  },
+  "servers": [{ "url": "https://zeitmint.com" }],
+  "paths": {
+    "/api/v1/partner/capabilities": {
+      "get": {
+        "operationId": "getPartnerCapabilities",
+        "summary": "Discover supported schemas, endpoints and adapter status",
+        "responses": {
+          "200": {
+            "description": "Capability document",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/api/v1/partner/validate": {
+      "post": {
+        "operationId": "validateZeitMintBundle",
+        "summary": "Validate a launch bundle and cross-document consistency",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Bundle" } } }
+        },
+        "responses": {
+          "200": { "description": "Valid bundle", "content": { "application/json": { "schema": { "type": "object" } } } },
+          "413": { "$ref": "#/components/responses/PayloadTooLarge" },
+          "415": { "$ref": "#/components/responses/UnsupportedMediaType" },
+          "422": { "$ref": "#/components/responses/ValidationFailed" }
+        }
+      }
+    },
+    "/api/v1/partner/based-bid/draft": {
+      "post": {
+        "operationId": "createBasedBidDraft",
+        "summary": "Map a valid ZeitMint bundle into a Based.bid review draft",
+        "description": "Returns a deterministic field mapping. It does not submit to Based.bid; live submission awaits the partner endpoint and authentication contract.",
+        "security": [{ "partnerBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BasedBidDraftRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "Based.bid review draft", "content": { "application/json": { "schema": { "type": "object" } } } },
+          "413": { "$ref": "#/components/responses/PayloadTooLarge" },
+          "415": { "$ref": "#/components/responses/UnsupportedMediaType" },
+          "422": { "$ref": "#/components/responses/ValidationFailed" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "partnerBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Partner-specific token configured by ZeitMint. Send as Authorization: Bearer <token>."
+      }
+    },
+    "schemas": {
+      "LaunchKit": { "$ref": "https://zeitmint.com/launch-kit.schema.json" },
+      "UtilityManifest": { "$ref": "https://zeitmint.com/utility-manifest.schema.json" },
+      "ReadinessReport": { "$ref": "https://zeitmint.com/readiness-report.schema.json" },
+      "Bundle": {
+        "type": "object",
+        "required": ["launchKit"],
+        "properties": {
+          "launchKit": { "$ref": "#/components/schemas/LaunchKit" },
+          "utilityManifest": { "$ref": "#/components/schemas/UtilityManifest" },
+          "readinessReport": { "$ref": "#/components/schemas/ReadinessReport" }
+        },
+        "additionalProperties": false
+      },
+      "BasedBidDraftRequest": {
+        "type": "object",
+        "required": ["bundle"],
+        "properties": {
+          "bundle": { "$ref": "#/components/schemas/Bundle" },
+          "options": {
+            "type": "object",
+            "properties": {
+              "chain": { "enum": ["base", "solana", "ethereum", "bnb", "robinhood-chain", "other"] },
+              "launchType": { "enum": ["pool", "flash-token", "board"] },
+              "dex": { "type": "string" },
+              "startingMarketCapUsd": { "type": "number", "exclusiveMinimum": 0 },
+              "initialBuyAmount": { "type": "string" },
+              "feeIntent": {
+                "type": "object",
+                "properties": {
+                  "preGraduationBuyFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "preGraduationSellFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "graduationFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "postGraduationTradingFeeBps": { "$ref": "#/components/schemas/BasisPoints" },
+                  "routingNote": { "type": "string" }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "BasisPoints": { "type": "integer", "minimum": 0, "maximum": 10000 },
+      "Issue": {
+        "type": "object",
+        "required": ["path", "code", "message"],
+        "properties": {
+          "path": { "type": "string" },
+          "code": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "responses": {
+      "PayloadTooLarge": { "description": "Request exceeds the 256 KiB limit" },
+      "UnsupportedMediaType": { "description": "Content-Type must be application/json" },
+      "ValidationFailed": {
+        "description": "Schema, consistency or adapter-option validation failed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": { "issues": { "type": "array", "items": { "$ref": "#/components/schemas/Issue" } } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

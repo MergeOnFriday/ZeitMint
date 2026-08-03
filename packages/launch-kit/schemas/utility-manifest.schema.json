@@ -12,10 +12,7 @@
     "source": {
       "type": "object",
       "required": ["name", "url"],
-      "properties": {
-        "name": { "const": "ZeitMint" },
-        "url": { "type": "string", "format": "uri" }
-      },
+      "properties": { "name": { "const": "ZeitMint" }, "url": { "type": "string", "format": "uri" } },
       "additionalProperties": false
     },
     "project": {
@@ -52,10 +49,7 @@
         "reward": {
           "type": "object",
           "required": ["primary", "bonus"],
-          "properties": {
-            "primary": { "$ref": "#/$defs/reward" },
-            "bonus": { "anyOf": [{ "$ref": "#/$defs/reward" }, { "type": "null" }] }
-          },
+          "properties": { "primary": { "$ref": "#/$defs/reward" }, "bonus": { "anyOf": [{ "$ref": "#/$defs/reward" }, { "type": "null" }] } },
           "additionalProperties": false
         },
         "funding": {
@@ -99,10 +93,7 @@
     "reward": {
       "type": "object",
       "required": ["amount", "asset"],
-      "properties": {
-        "amount": { "type": "string", "minLength": 1 },
-        "asset": { "type": "string", "minLength": 1 }
-      },
+      "properties": { "amount": { "type": "string", "minLength": 1 }, "asset": { "type": "string", "minLength": 1 } },
       "additionalProperties": false
     }
   },

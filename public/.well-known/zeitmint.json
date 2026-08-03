@@ -1,0 +1,23 @@
+{
+  "$schema": "https://zeitmint.com/partner-capability.schema.json",
+  "name": "ZeitMint",
+  "url": "https://zeitmint.com",
+  "contact": "devs@zeitmint.com",
+  "apiVersion": "1.0",
+  "sdk": {
+    "package": "@zeitmint/launch-kit",
+    "version": "0.1.0",
+    "status": "partner-testing",
+    "repository": "https://github.com/MergeOnFriday/zeitmint/tree/main/packages/launch-kit"
+  },
+  "openapi": "https://zeitmint.com/openapi.json",
+  "capabilities": "https://zeitmint.com/api/v1/partner/capabilities",
+  "partnerAuthentication": "bearer",
+  "boundaries": {
+    "deploysTokens": false,
+    "signsTransactions": false,
+    "movesFunds": false,
+    "configuresLiquidity": false,
+    "requiresPartnerApproval": true
+  }
+}

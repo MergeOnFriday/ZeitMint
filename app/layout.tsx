@@ -1,49 +1,38 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
   const protocol = requestHeaders.get("x-forwarded-proto") || "https";
-  const origin = host ? `${protocol}://${host}` : "https://zeitmint.example";
+  const origin = host ? `${protocol}://${host}` : "https://zeitmint.com";
 
   return {
-    title: "ZeitMint — Mint the moment",
+    title: "ZeitMint — Token launch-readiness and creative kits",
     description:
-      "Turn today’s trends and yesterday’s internet lore into original, launch-ready memecoins.",
+      "Validate a token project, design useful community missions and package an Emblem-ready, multichain launch handoff.",
     icons: {
       icon: "/favicon.png",
     },
     openGraph: {
-      title: "ZeitMint — Mint the moment",
-      description: "Turn today’s trends into launch-ready coins.",
+      title: "ZeitMint — Make it launch-ready.",
+      description: "Free token launch-readiness checks and portable creative handoffs for Emblem, Solana and EVM.",
       type: "website",
       images: [
         {
-          url: `${origin}/og.png`,
+          url: `${origin}/og-launch-readiness.png`,
           width: 1731,
           height: 909,
-          alt: "ZeitMint — Mint the moment",
+          alt: "ZeitMint — Make it launch-ready.",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "ZeitMint — Mint the moment",
-      description: "Turn today’s trends into launch-ready coins.",
-      images: [`${origin}/og.png`],
+      title: "ZeitMint — Make it launch-ready.",
+      description: "Free token launch-readiness checks and portable creative handoffs for Emblem, Solana and EVM.",
+      images: [`${origin}/og-launch-readiness.png`],
     },
   };
 }
@@ -55,9 +44,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

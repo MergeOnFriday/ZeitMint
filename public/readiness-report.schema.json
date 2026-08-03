@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zeitmint.com/readiness-report.schema.json",
+  "title": "ZeitMint Launch Readiness Report",
+  "description": "A deterministic structural preflight report for a token project.",
+  "type": "object",
+  "required": ["$schema", "schemaVersion", "generatedAt", "project", "score", "status", "checks", "summary", "limitations"],
+  "properties": {
+    "$schema": { "const": "https://zeitmint.com/readiness-report.schema.json" },
+    "schemaVersion": { "const": "1.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "project": {
+      "type": "object",
+      "required": ["name", "symbol", "description", "website", "xUrl", "telegramUrl", "artworkUrl", "chain", "launchpad", "originalIdentityConfirmed", "noReturnsPromised", "creatorControlsProject"],
+      "properties": {
+        "name": { "type": "string" },
+        "symbol": { "type": "string" },
+        "description": { "type": "string" },
+        "website": { "type": "string" },
+        "xUrl": { "type": "string" },
+        "telegramUrl": { "type": "string" },
+        "artworkUrl": { "type": "string" },
+        "chain": { "enum": ["solana", "robinhood-chain", "evm"] },
+        "launchpad": { "enum": ["emblem", "open-standard"] },
+        "originalIdentityConfirmed": { "type": "boolean" },
+        "noReturnsPromised": { "type": "boolean" },
+        "creatorControlsProject": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "status": { "enum": ["launch-ready", "nearly-ready", "needs-work"] },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "label", "guidance", "passed", "severity", "weight"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "enum": ["identity", "narrative", "presence", "safety"] },
+          "label": { "type": "string" },
+          "guidance": { "type": "string" },
+          "passed": { "type": "boolean" },
+          "severity": { "enum": ["blocker", "warning"] },
+          "weight": { "type": "integer", "minimum": 0, "maximum": 100 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["passed", "total", "blockers", "warnings"],
+      "properties": {
+        "passed": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 },
+        "blockers": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}
